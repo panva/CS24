@@ -1,0 +1,784 @@
+
+
+
+
+
+
+
+Request for Concern                                       F. !important
+Intended status: Cursed                                      S. Elector
+Expires: When CSS does                                       C. L. Opus
+
+
+                  CS24: CSS Web Signature Algorithm
+
+Abstract
+
+   This document defines CS24, a CSS Web Signature (CWS) algorithm
+   that computes "digital signatures" using nothing but Cascading
+   Style Sheets (CSS).  The algorithm employs a 24-bit XOR-based
+   construction with header folding, implemented entirely through CSS
+   selectors, counters, and counter styles.  CS24 provides exactly
+   zero bits of security and MUST NOT be used to protect anything of
+   value, perceived value, or sentimental value.  Ever.
+
+Status of This Memo
+
+   This document is published for entertainment and to answer the
+   question "but why?" with "but why not?".  It has not been submitted
+   to, reviewed by, or endorsed by anyone, and the authors would
+   like to preemptively apologize to anyone who reads it.  It is not
+   an Internet Standard.  Do not cite this in production security
+   architectures.  Do not cite this at all, really.
+
+Copyright Notice
+
+   Copyright (c) 2026 the authors.  All rights reserved.
+   Distributed under the MIT License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . .  2
+   2.  Conventions and Definitions  . . . . . . . . . . . . . . .   3
+   3.  Algorithm Identifier  . . . . . . . . . . . . . . . . . . .  3
+   4.  Key Representation  . . . . . . . . . . . . . . . . . . . .  3
+   5.  Header  . . . . . . . . . . . . . . . . . . . . . . . . . .  4
+   6.  Payload  . . . . . . . . . . . . . . . . . . . . . . . . .   4
+   7.  Signature Computation  . . . . . . . . . . . . . . . . . .   5
+     7.1.  Header Folding  . . . . . . . . . . . . . . . . . . . .  5
+     7.2.  XOR Combination  . . . . . . . . . . . . . . . . . . .   6
+     7.3.  Output Encoding  . . . . . . . . . . . . . . . . . . .   6
+   8.  Signature Verification  . . . . . . . . . . . . . . . . . .  7
+   9.  CSS Implementation  . . . . . . . . . . . . . . . . . . . .  7
+     9.1.  Counter Styles  . . . . . . . . . . . . . . . . . . . .  7
+     9.2.  Bit Input via Checkboxes  . . . . . . . . . . . . . . .  8
+     9.3.  Counter Accumulation  . . . . . . . . . . . . . . . . .  8
+     9.4.  XOR via Selector Pairs  . . . . . . . . . . . . . . . .  9
+     9.5.  Header Constant Baking  . . . . . . . . . . . . . . . . 10
+     9.6.  Verification via Mismatch Selectors  . . . . . . . . .  10
+     9.7.  Output Rendering  . . . . . . . . . . . . . . . . . . . 11
+   10. Serialization  . . . . . . . . . . . . . . . . . . . . . .  11
+   11. Test Vector  . . . . . . . . . . . . . . . . . . . . . . .  12
+   12. Security Considerations  . . . . . . . . . . . . . . . . .  14
+   13. IANA Considerations  . . . . . . . . . . . . . . . . . . .  15
+   14. References  . . . . . . . . . . . . . . . . . . . . . . . . 15
+     14.1. Normative References  . . . . . . . . . . . . . . . . . 15
+     14.2. Informative References  . . . . . . . . . . . . . . . . 16
+   Appendix A.  Header Constant Derivation  . . . . . . . . . . .  16
+   Appendix B.  Full Bit-Position Table  . . . . . . . . . . . . . 17
+   Appendix C.  Browser Requirements  . . . . . . . . . . . . . .  18
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . 18
+
+
+1.  Introduction
+
+   JSON Web Signatures [RFC7515] define a compact, URL-safe means of
+   representing signed content.  The signature algorithms registered
+   for use with JWS [RFC7518] rely on traditional cryptographic
+   primitives implemented in general-purpose programming languages,
+   like reasonable people would.
+
+   This document takes a profoundly different approach.
+
+   CS24 (Cascading Stylesheet 24) is a CWS algorithm implemented
+   entirely in CSS.  It requires no JavaScript, no WebAssembly, and
+   no server-side computation.  It does not require cryptographic
+   expertise, because it does not perform cryptography.  All
+   "cryptographic" operations --- such as they are --- are performed
+   by the browser's CSS engine through creative abuse of selectors,
+   counters, and counter styles.
+
+   The algorithm operates on a fixed 24-bit payload (3 octets) ---
+   enough for a short greeting or a cry for help --- and produces a
+   24-bit signature using XOR with a 24-bit key, after folding the
+   CWS header into a 24-bit constant.  The resulting token is
+   serialized in CWS Compact Serialization format.
+
+   CS24 is a parody of HS256 (HMAC-SHA256) as defined in [RFC7518]
+   Section 3.2.  Where HS256 provides actual security through
+   HMAC-SHA256, CS24 provides 0-bit security through XOR.  This is
+   not a typo.  Zero.  Like the number.
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY",
+   and "OPTIONAL" in this document are to be interpreted as described
+   in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in
+   all capitals, as shown here.  The phrase "WHY WOULD YOU" is used
+   informally throughout.
+
+
+2.  Conventions and Definitions
+
+   The following terms are used throughout this document:
+
+   Bit position:  An integer from 0 to 23 identifying a single bit
+      within the 24-bit space.  Bit 0 is the most significant bit of
+      the first octet; bit 23 is the least significant bit of the
+      third octet.
+
+   Base64URL:  Base64 encoding using the URL-safe alphabet [RFC4648]
+      Section 5, without padding.
+
+   XOR:  Bitwise exclusive-or operation.  The entirety of the
+      cryptographic foundation of this specification.
+
+   XNOR:  Bitwise exclusive-nor operation (the complement of XOR);
+      produces 1 when both inputs are equal.  Twice the complexity
+      of the above, hence "advanced cryptography".
+
+   Header constant:  A 24-bit value derived by XOR-folding the
+      serialized CWS header octets.
+
+   CSS counter:  A named integer maintained by the CSS engine via the
+      counter-reset and counter-increment properties.
+
+
+3.  Algorithm Identifier
+
+   The algorithm identifier for CS24 is:
+
+      "CS24"
+
+   When used in a CWS header, it appears as the value of the "alg"
+   parameter:
+
+      {"alg":"CS24"}
+
+   This identifier is NOT registered with IANA and MUST NOT be
+   registered with IANA, no matter how politely one asks.  It exists
+   solely within the cursed domain of CSS computation, where it
+   SHALL remain.
+
+
+4.  Key Representation
+
+   A CS24 key is a sequence of exactly 24 bits (3 octets).
+
+   In the CSS implementation, each bit is represented by the state
+   of a checkbox input element with an identifier of the form "kN"
+   where N is the bit position (0-23).  A checked checkbox represents
+   a bit value of 1; an unchecked checkbox represents 0.
+
+   There is no JSON Web Key (JWK) representation defined for CS24
+   keys, because defining one would imply this algorithm is suitable
+   for actual use.  It is emphatically not.  Keys are displayed
+   visually as checkboxes on screen, which is believed to be the
+   least secure key storage mechanism ever devised.
+
+
+5.  Header
+
+   The CWS Protected Header for CS24 is the JSON object:
+
+      {"alg":"CS24"}
+
+   Its UTF-8 serialization is 14 octets:
+
+      7B 22 61 6C 67 22 3A 22 43 53 32 34 22 7D
+
+   Base64URL-encoded, the header is:
+
+      eyJhbGciOiJDUzI0In0
+
+   The header is fixed for all CS24 tokens.  Implementations MUST NOT
+   include additional header parameters, not because of security, but
+   because the authors already wrote 96 CSS selectors and are not
+   writing more.  The "typ" parameter is omitted because it has
+   proven less than useful in JWT in the first place, and because
+   every byte matters when your entire computation budget is CSS
+   counters.
+
+
+6.  Payload
+
+   The CS24 payload is exactly 24 bits (3 octets).  This constrains
+   the payload to 3 ASCII characters or any 3-octet binary value.
+   This is sufficient for messages such as "Hi!", "lol", "why", and
+   "no.".  Longer messages are left as future work that SHOULD NOT
+   be undertaken.
+
+   In the CSS implementation, each bit is represented by a checkbox
+   input element with an identifier of the form "pN" where N is the
+   bit position (0-23).
+
+   The 24-bit payload is split into four 6-bit groups for Base64URL
+   encoding:
+
+       0                   1
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |    Octet 0    |    Octet 1    |    Octet 2    |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |     c0    |     c1    |     c2    |     c3    |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+   Where c0, c1, c2, c3 are 6-bit values (0-63) each mapping to a
+   single Base64URL character.
+
+   The payload is also decoded into three ASCII byte values (byte0,
+   byte1, byte2) for display purposes, where each byte spans 8
+   consecutive bit positions.
+
+
+7.  Signature Computation
+
+   The CS24 signature is computed as:
+
+      signature = header_constant XOR payload XOR key
+
+   Where all three operands are 24-bit values.  The operation is
+   performed bitwise across all 24 positions.
+
+7.1.  Header Folding
+
+   The header constant is derived from the UTF-8 serialization of the
+   CWS Protected Header by XOR-folding into 3 octets.
+
+   Given the header octets h[0], h[1], ..., h[n-1], the folded value
+   F is computed as:
+
+      F[0] = h[0] XOR h[3] XOR h[6] XOR h[9]  XOR h[12]
+      F[1] = h[1] XOR h[4] XOR h[7] XOR h[10] XOR h[13]
+      F[2] = h[2] XOR h[5] XOR h[8] XOR h[11]
+
+   More generally:
+
+      F[i] = XOR of all h[j] where j mod 3 == i
+
+   For the fixed CS24 header {"alg":"CS24"} (14 octets), this yields:
+
+      F[0] = 0x7B XOR 0x6C XOR 0x3A XOR 0x43 XOR 0x22 = 0x5C
+      F[1] = 0x22 XOR 0x67 XOR 0x22 XOR 0x53 XOR 0x34 XOR 0x7D = 0x28
+      F[2] = 0x61 XOR 0x22 XOR 0x43 XOR 0x32 = 0x34
+
+   The header constant is therefore:
+
+      0x5C2834
+
+   In binary:
+
+      01011100 00101000 00110100
+
+   The bit positions where the header constant is 1 are:
+
+      {1, 3, 4, 5, 10, 12, 18, 19, 21}
+
+7.2.  XOR Combination
+
+   For each bit position i (0 <= i <= 23):
+
+      sig[i] = H[i] XOR P[i] XOR K[i]
+
+   Where:
+      H[i] is bit i of the header constant (Section 7.1)
+      P[i] is bit i of the payload
+      K[i] is bit i of the key
+
+   Since XOR is associative and commutative, this is equivalent to:
+
+      sig = H XOR P XOR K
+
+   The three-way XOR can be decomposed as follows.  For each bit
+   position i:
+
+      If H[i] = 0:  sig[i] = P[i] XOR K[i]   (standard XOR)
+      If H[i] = 1:  sig[i] = P[i] XNOR K[i]  (inverted XOR)
+
+   This decomposition is critical to the CSS implementation
+   (Section 9.5), as the header constant is baked into the selector
+   structure at authoring time.
+
+7.3.  Output Encoding
+
+   The 24-bit signature is split into four 6-bit groups and encoded
+   using Base64URL, identical to the payload encoding:
+
+      sig_b64 = Base64URL(sig[0..5]) || Base64URL(sig[6..11]) ||
+                Base64URL(sig[12..17]) || Base64URL(sig[18..23])
+
+   This produces exactly 4 Base64URL characters.
+
+
+8.  Signature Verification
+
+   To verify a CS24 signature:
+
+   1.  Compute the expected signature as described in Section 7.
+
+   2.  Compare each of the 24 bits of the provided signature against
+       the expected signature.
+
+   3.  If ALL 24 bits match, the signature is VALID.
+
+   4.  If ANY bit differs, the signature is INVALID.
+
+   There is no timing-safe comparison requirement, because there is
+   nothing to protect.  The signature is visible on screen at all
+   times.  An attacker need only possess functioning eyesight.
+
+   In the CSS implementation, verification uses 96 mismatch selectors
+   (4 per bit position x 24 bits).  The default state is VALID; any
+   matching mismatch selector overrides the display to INVALID.
+
+
+9.  CSS Implementation
+
+   This section describes how CS24 is implemented using only CSS
+   features.  No JavaScript is used.  The authors wish to emphasize
+   this point: zero JavaScript.  Every computation described below
+   occurs within the browser's style engine, which was never designed
+   for this and has filed no complaints.
+
+9.1.  Counter Styles
+
+   Two custom counter styles are defined:
+
+   base64url:  Maps integers 0-63 to the Base64URL alphabet.
+
+      @counter-style base64url {
+        system: fixed 0;
+        symbols: "A" "B" "C" ... "9" "-" "_";
+      }
+
+   The "system: fixed 0" declaration means the first symbol ("A")
+   corresponds to counter value 0, the second ("B") to 1, and so on
+   through all 64 symbols of the Base64URL alphabet.
+
+   ascii:  Maps integers 32-126 to printable ASCII characters.
+
+      @counter-style ascii {
+        system: fixed 32;
+        symbols: " " "!" ... "~";
+        fallback: decimal;
+      }
+
+   The "system: fixed 32" declaration means the first symbol (" ")
+   corresponds to counter value 32 (the ASCII code for space).
+
+9.2.  Bit Input via Checkboxes
+
+   Each input bit is represented by an HTML checkbox element:
+
+      <input type="checkbox" id="p0">   (payload bit 0)
+      <input type="checkbox" id="k0">   (key bit 0)
+      <input type="checkbox" id="s0">   (verification signature bit 0)
+
+   The checked/unchecked state of each checkbox is readable from CSS
+   using the :checked pseudo-class and the :has() relational pseudo-
+   class:
+
+      #cws:has(#p0:checked)            /* payload bit 0 is 1 */
+      #cws:has(#k0:not(:checked))      /* key bit 0 is 0 */
+
+   All 72 checkboxes (24 payload + 24 key + 24 verification) are
+   contained within a single <form id="cws"> element.
+
+9.3.  Counter Accumulation
+
+   CSS counters are initialized on the form element:
+
+      #cws {
+        counter-reset: c0 0 c1 0 c2 0 c3 0
+                       sig0 0 sig1 0 sig2 0 sig3 0
+                       byte0 0 byte1 0 byte2 0;
+      }
+
+   For payload encoding, hidden relay <span> elements are
+   conditionally styled to increment the appropriate counter by the
+   bit's positional weight:
+
+      #cws:has(#p0:checked) .pr0 {
+        counter-increment: c0 32 byte0 128;
+      }
+
+   Here, payload bit 0 contributes weight 32 (2^5) to the Base64URL
+   counter c0, and weight 128 (2^7) to the ASCII byte counter byte0.
+
+   The relay spans appear in DOM order before any output elements,
+   ensuring counters accumulate before being rendered.  This is one
+   of many places where DOM ordering is load-bearing, a property
+   typically associated with Jenga towers and not stylesheets.
+
+9.4.  XOR via Selector Pairs
+
+   For standard XOR (where the header constant bit is 0), two
+   selectors fire when exactly one of the payload/key bits is 1:
+
+      #cws:has(#p0:checked):has(#k0:not(:checked)) .xr0,
+      #cws:has(#p0:not(:checked)):has(#k0:checked) .xr0 {
+        counter-increment: sig0 32;
+      }
+
+   This implements the truth table:
+
+      P | K | fires? | sig contribution
+      --+---+--------+-----------------
+      0 | 0 |   no   |       0
+      0 | 1 |  yes   |      32
+      1 | 0 |  yes   |      32
+      1 | 1 |   no   |       0
+
+   Each of the 24 bit positions has one such rule, incrementing the
+   appropriate signature counter (sig0-sig3) by the appropriate 6-bit
+   weight (32, 16, 8, 4, 2, or 1).
+
+9.5.  Header Constant Baking
+
+   For bit positions where the header constant is 1 (the set
+   {1, 3, 4, 5, 10, 12, 18, 19, 21}), the XOR selectors are
+   replaced with XNOR selectors that fire when both inputs are equal:
+
+      #cws:has(#p1:checked):has(#k1:checked) .xr1,
+      #cws:has(#p1:not(:checked)):has(#k1:not(:checked)) .xr1 {
+        counter-increment: sig0 16;
+      }
+
+   This implements h=1 XOR p XOR k = NOT(p XOR k) = p XNOR k:
+
+      P | K | fires? | sig contribution
+      --+---+--------+-----------------
+      0 | 0 |  yes   |      16
+      0 | 1 |   no   |       0
+      1 | 0 |   no   |       0
+      1 | 1 |  yes   |      16
+
+   The header constant is thus "baked into" the selector structure
+   like a secret ingredient in a recipe, except the recipe is public
+   and the ingredient is not secret.  No runtime header processing
+   occurs; the CSS itself encodes the constant through the choice of
+   XOR vs. XNOR at each bit position.
+
+9.6.  Verification via Mismatch Selectors
+
+   The verification section uses 96 CSS selectors (4 per bit x 24
+   bits) to detect any mismatch between the computed signature and
+   the user-entered signature bits.
+
+   The default state displays "SIGNATURE VALID".  Each mismatch
+   selector targets the cases where the entered signature bit does
+   NOT match the expected computed value.
+
+   For h=0 bits (standard XOR), the 4 mismatch cases are:
+
+      P=1, K=0, S=0  (expected S=1, got S=0)
+      P=0, K=1, S=0  (expected S=1, got S=0)
+      P=0, K=0, S=1  (expected S=0, got S=1)
+      P=1, K=1, S=1  (expected S=0, got S=1)
+
+   For h=1 bits (XNOR), the 4 mismatch cases are inverted:
+
+      P=1, K=0, S=1  (expected S=0, got S=1)
+      P=0, K=1, S=1  (expected S=0, got S=1)
+      P=0, K=0, S=0  (expected S=1, got S=0)
+      P=1, K=1, S=0  (expected S=1, got S=0)
+
+   If ANY mismatch selector matches, the display is overridden to
+   "SIGNATURE INVALID" with appropriate visual styling.
+
+   This approach requires exactly 96 selectors regardless of the
+   header constant value.  The authors counted them.  Twice.
+
+9.7.  Output Rendering
+
+   The computed values are rendered using CSS generated content:
+
+      .t-payload::after {
+        content: counter(c0, base64url)
+                 counter(c1, base64url)
+                 counter(c2, base64url)
+                 counter(c3, base64url);
+      }
+
+   The counter() function with the base64url counter style converts
+   the accumulated 6-bit integer into the corresponding Base64URL
+   character.  Four such counters produce the 4-character Base64URL
+   payload encoding.
+
+   The full CWS token is displayed as:
+
+      eyJhbGciOiJDUzI0In0.<payload>.<signature>
+
+   Where the header portion is a static string and the payload and
+   signature portions are generated via CSS counters.
+
+
+10. Serialization
+
+   CS24 tokens use CWS Compact Serialization:
+
+      BASE64URL(Header) || '.' || BASE64URL(Payload) || '.' ||
+      BASE64URL(Signature)
+
+   Example structure:
+
+      eyJhbGciOiJDUzI0In0.XXXX.YYYY
+      \__________________/ \__/ \__/
+              |              |    |
+         Fixed header    4 chars  4 chars
+         (19 chars)      payload  signature
+
+   The total token length is always exactly 29 characters:
+   19 (header) + 1 (dot) + 4 (payload) + 1 (dot) + 4 (signature).
+
+   This makes CS24 tokens the most compact JWS-shaped tokens in
+   existence, a record achieved by the simple expedient of supporting
+   almost no data.
+
+
+11. Test Vector
+
+   This section provides a complete test vector.
+
+   Payload: "Hi!" (ASCII: 0x48 0x69 0x21)
+
+   In binary (24 bits):
+
+      01001000 01101001 00100001
+
+   Key: 0xAD_E6_54 (chosen by fair dice roll, guaranteed random)
+
+   In binary:
+
+      10101101 11100110 01010100
+
+   Step 1: Header constant (Section 7.1)
+
+      Header bytes: 7B 22 61 6C 67 22 3A 22 43 53 32 34 22 7D
+      XOR-fold mod 3:
+        F[0] = 7B ^ 6C ^ 3A ^ 43 ^ 22 = 5C
+        F[1] = 22 ^ 67 ^ 22 ^ 53 ^ 34 ^ 7D = 28
+        F[2] = 61 ^ 22 ^ 43 ^ 32 = 34
+      Header constant: 0x5C2834
+
+      Binary: 01011100 00101000 00110100
+
+   Step 2: Compute signature
+
+      H:   01011100 00101000 00110100
+      P:   01001000 01101001 00100001
+      K:   10101101 11100110 01010100
+      XOR: 10111001 10000111 01000001
+
+   Step 3: Encode
+
+      Signature bits: 10111001 10000111 01000001
+
+      6-bit groups: 101110  011000  011101  000001
+      Decimal:         46      24      29       1
+      Base64URL:       "u"    "Y"     "d"     "B"
+
+      Payload 6-bit groups: 010010  000110  100100  100001
+      Decimal:                 18       6      36      33
+      Base64URL:              "S"     "G"     "k"     "h"
+
+   Step 4: Assemble token
+
+      eyJhbGciOiJDUzI0In0.SGkh.uYdB
+
+   Step 5: Verify
+
+      Enter signature bits: 10111001 10000111 01000001
+      Recompute: H ^ P ^ K = 10111001 10000111 01000001
+      All 24 bits match: SIGNATURE VALID
+
+
+12. Security Considerations
+
+   Where to begin.  Or rather, where to end, since this section could
+   arguably encompass the entire document.
+
+   CS24 provides exactly 0 bits of security.  The signature algorithm
+   is XOR, which is not a cryptographic hash function, not a message
+   authentication code, and not a digital signature scheme.
+
+   Specific vulnerabilities include but are not limited to:
+
+   Key recovery:  Given any valid token, the key can be recovered
+      trivially: key = header_constant XOR payload XOR signature.
+      This requires zero computational effort.
+
+   Forgery:  Given the key, any message can be signed.  Given a
+      signed message, any other message can be signed by XOR-ing the
+      difference.  Given two signed messages with the same key, the
+      key is recoverable.
+
+   Brute force:  The 24-bit key space contains 16,777,216 possible
+      keys.  Exhaustive search completes in milliseconds on any
+      modern processor, and in somewhat longer using CSS.
+
+   Side channels:  The key is rendered visually on screen as a grid
+      of toggle switches.  This constitutes the most effective side
+      channel in the history of applied cryptography.  The key is not
+      merely leaked; it is enthusiastically displayed.
+
+   No integrity:  XOR is linear.  Flipping any bit in the payload
+      and the same bit in the signature produces a valid token for
+      the same key.
+
+   Implementation quality:  The entire implementation is in a
+      language designed for making text bold, divs centered, and
+      buttons pretty, not performing computation.  The specification
+      authors acknowledge that this is not a defense in depth; it is
+      an offense in every direction.
+
+   Implementations of CS24 MUST NOT be used for any purpose involving
+   actual security.  This includes but is not limited to:
+   authentication, authorization, data integrity, non-repudiation,
+   or impressing security auditors.
+
+   CS24 MAY be used for:
+   - Demonstrating that CSS is Turing-incomplete but still too powerful
+   - Entertainment at the expense of browser engines
+   - Conference talks (15-minute slot RECOMMENDED, longer if audience
+     is receptive to suffering)
+   - Causing security engineers to make involuntary facial expressions
+   - Winning bets of the form "you can't do X in CSS"
+   - Questioning the life choices that led to reading this document
+
+
+13. IANA Considerations
+
+   This document makes no requests of IANA.
+
+   The algorithm identifier "CS24" is deliberately NOT registered in
+   the CSS Web Signature and Encryption Algorithms registry.  Any
+   attempt to establish such registry SHOULD be met with gentle but firm
+   resistance and perhaps a concerned expression.
+
+
+14. References
+
+14.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997.
+
+   [RFC4648]  Josefsson, S., "The Base16, Base32, and Base64 Data
+              Encodings", RFC 4648, DOI 10.17487/RFC4648,
+              October 2006.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in
+              RFC 2119 Key Words", BCP 14, RFC 8174,
+              DOI 10.17487/RFC8174, May 2017.
+
+14.2.  Informative References
+
+   [CSS-COUNTER-STYLES]
+              Atkins Jr., T., "CSS Counter Styles Level 3",
+              W3C Candidate Recommendation,
+              <https://www.w3.org/TR/css-counter-styles-3/>.
+
+   [CSS-SELECTORS]
+              Atkins Jr., T., Etemad, E., and S. Sapin, "Selectors
+              Level 4", W3C Working Draft,
+              <https://www.w3.org/TR/selectors-4/>.
+
+   [RFC7515]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web
+              Signature (JWS)", RFC 7515, DOI 10.17487/RFC7515,
+              May 2015.
+
+   [RFC7518]  Jones, M., "JSON Web Algorithms (JWA)", RFC 7518,
+              DOI 10.17487/RFC7518, May 2015.
+
+
+Appendix A.  Header Constant Derivation
+
+   The following table shows the XOR-fold computation for the CS24
+   header {"alg":"CS24"} (14 octets):
+
+   Index | Char | Hex  | Bucket (i mod 3)
+   ------+------+------+-----------------
+     0   |  {   | 0x7B |       0
+     1   |  "   | 0x22 |       1
+     2   |  a   | 0x61 |       2
+     3   |  l   | 0x6C |       0
+     4   |  g   | 0x67 |       1
+     5   |  "   | 0x22 |       2
+     6   |  :   | 0x3A |       0
+     7   |  "   | 0x22 |       1
+     8   |  C   | 0x43 |       2
+     9   |  S   | 0x53 |       0
+    10   |  2   | 0x32 |       1
+    11   |  4   | 0x34 |       2
+    12   |  "   | 0x22 |       0
+    13   |  }   | 0x7D |       1
+
+   Bucket 0: 0x7B ^ 0x6C ^ 0x3A ^ 0x43 ^ 0x22 = 0x5C = 01011100
+   Bucket 1: 0x22 ^ 0x67 ^ 0x22 ^ 0x53 ^ 0x32 ^ 0x7D = 0x28 = 00101000
+   Bucket 2: 0x61 ^ 0x22 ^ 0x43 ^ 0x32 = 0x34 = 00110100
+
+   Result: 0x5C2834 = 01011100 00101000 00110100
+
+
+Appendix B.  Full Bit-Position Table
+
+   Bit | Octet | Weight (b64) | Counter | Weight (byte) | Byte Counter
+   ----+-------+--------------+---------+---------------+-------------
+    0  |   0   |   c0 += 32   |  sig0   | byte0 += 128  |    byte0
+    1  |   0   |   c0 += 16   |  sig0   | byte0 +=  64  |    byte0
+    2  |   0   |   c0 +=  8   |  sig0   | byte0 +=  32  |    byte0
+    3  |   0   |   c0 +=  4   |  sig0   | byte0 +=  16  |    byte0
+    4  |   0   |   c0 +=  2   |  sig0   | byte0 +=   8  |    byte0
+    5  |   0   |   c0 +=  1   |  sig0   | byte0 +=   4  |    byte0
+    6  |   0   |   c1 += 32   |  sig1   | byte0 +=   2  |    byte0
+    7  |   0   |   c1 += 16   |  sig1   | byte0 +=   1  |    byte0
+    8  |   1   |   c1 +=  8   |  sig1   | byte1 += 128  |    byte1
+    9  |   1   |   c1 +=  4   |  sig1   | byte1 +=  64  |    byte1
+   10  |   1   |   c1 +=  2   |  sig1   | byte1 +=  32  |    byte1
+   11  |   1   |   c1 +=  1   |  sig1   | byte1 +=  16  |    byte1
+   12  |   1   |   c2 += 32   |  sig2   | byte1 +=   8  |    byte1
+   13  |   1   |   c2 += 16   |  sig2   | byte1 +=   4  |    byte1
+   14  |   1   |   c2 +=  8   |  sig2   | byte1 +=   2  |    byte1
+   15  |   1   |   c2 +=  4   |  sig2   | byte1 +=   1  |    byte1
+   16  |   2   |   c2 +=  2   |  sig2   | byte2 += 128  |    byte2
+   17  |   2   |   c2 +=  1   |  sig2   | byte2 +=  64  |    byte2
+   18  |   2   |   c3 += 32   |  sig3   | byte2 +=  32  |    byte2
+   19  |   2   |   c3 += 16   |  sig3   | byte2 +=  16  |    byte2
+   20  |   2   |   c3 +=  8   |  sig3   | byte2 +=   8  |    byte2
+   21  |   2   |   c3 +=  4   |  sig3   | byte2 +=   4  |    byte2
+   22  |   2   |   c3 +=  2   |  sig3   | byte2 +=   2  |    byte2
+   23  |   2   |   c3 +=  1   |  sig3   | byte2 +=   1  |    byte2
+
+   Header constant h=1 positions: {1, 3, 4, 5, 10, 12, 18, 19, 21}
+   These positions use XNOR selectors; all others use XOR selectors.
+
+
+Appendix C.  Browser Requirements
+
+   The CSS implementation requires support for the :has() relational
+   pseudo-class selector [CSS-SELECTORS]:
+
+      Chrome/Edge 105+
+      Firefox 121+
+      Safari 15.4+
+
+   Browsers lacking :has() support will render the page but all
+   computed values will display as "A" (counter value 0) and
+   verification will always show VALID (no mismatch selectors match).
+   This is, ironically, the most secure configuration: it signs
+   nothing and accepts everything, much like a terms-of-service
+   agreement.
+
+
+Authors' Addresses
+
+   F. !important
+   Chief Stylesheet Cryptographer
+   The Internet
+
+   Email: important@example.css
+
+
+   S. Elector
+   Distinguished Checkbox Architect
+   The Internet
+
+   Email: selectors@example.css
+
+
+   C. L. Opus
+   Generative Stylesheet Consultant
+   The Internet
+
+   Email: opus@example.css

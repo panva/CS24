@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cascading Stylesheet 24</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<form id="cws">
+
+  <!-- Hidden relay spans — first in DOM so counters accumulate before output -->
+  <div class="relays" aria-hidden="true">
+    <span class="pr0"></span><span class="pr1"></span><span class="pr2"></span><span class="pr3"></span><span class="pr4"></span><span class="pr5"></span><span class="pr6"></span><span class="pr7"></span><span class="pr8"></span><span class="pr9"></span><span class="pr10"></span><span class="pr11"></span><span class="pr12"></span><span class="pr13"></span><span class="pr14"></span><span class="pr15"></span><span class="pr16"></span><span class="pr17"></span><span class="pr18"></span><span class="pr19"></span><span class="pr20"></span><span class="pr21"></span><span class="pr22"></span><span class="pr23"></span>
+    <span class="xr0"></span><span class="xr1"></span><span class="xr2"></span><span class="xr3"></span><span class="xr4"></span><span class="xr5"></span><span class="xr6"></span><span class="xr7"></span><span class="xr8"></span><span class="xr9"></span><span class="xr10"></span><span class="xr11"></span><span class="xr12"></span><span class="xr13"></span><span class="xr14"></span><span class="xr15"></span><span class="xr16"></span><span class="xr17"></span><span class="xr18"></span><span class="xr19"></span><span class="xr20"></span><span class="xr21"></span><span class="xr22"></span><span class="xr23"></span>
+  </div>
+
+  <header class="page-header">
+    <h1><span class="c">C</span><span class="w">W</span><span class="s">S</span></h1>
+    <p class="tagline">CSS Web Signatures</p>
+    <p class="algo">Algorithm: <code>CS24</code> <span class="algo-full">(Cascading Stylesheet 24)</span></p>
+    <a href="rfc-cs24.txt" class="rfc-link"></a>
+  </header>
+
+  <div class="token-display">
+    <div class="token-label">Encoded Token</div>
+    <div class="token-value"><span class="t-hdr">eyJhbGciOiJDUzI0In0</span><span class="t-dot">.</span><span class="t-payload"></span><span class="t-dot">.</span><span class="t-sig"></span></div>
+  </div>
+
+  <section class="card card-hdr">
+    <h2>Header <small>ALGORITHM</small></h2>
+    <pre>{
+  "alg": "CS24"
+}</pre>
+  </section>
+
+  <section class="card card-payload">
+    <h2>Payload <small>24 BITS — TOGGLE TO ENCODE</small></h2>
+    <div class="bit-grid">
+      <div class="bit-group">
+        <input type="checkbox" id="p0"><label for="p0"></label>
+        <input type="checkbox" id="p1" checked><label for="p1"></label>
+        <input type="checkbox" id="p2"><label for="p2"></label>
+        <input type="checkbox" id="p3"><label for="p3"></label>
+        <input type="checkbox" id="p4" checked><label for="p4"></label>
+        <input type="checkbox" id="p5"><label for="p5"></label>
+      </div>
+      <div class="bit-group">
+        <input type="checkbox" id="p6"><label for="p6"></label>
+        <input type="checkbox" id="p7"><label for="p7"></label>
+        <input type="checkbox" id="p8"><label for="p8"></label>
+        <input type="checkbox" id="p9" checked><label for="p9"></label>
+        <input type="checkbox" id="p10" checked><label for="p10"></label>
+        <input type="checkbox" id="p11"><label for="p11"></label>
+      </div>
+      <div class="bit-group">
+        <input type="checkbox" id="p12" checked><label for="p12"></label>
+        <input type="checkbox" id="p13"><label for="p13"></label>
+        <input type="checkbox" id="p14"><label for="p14"></label>
+        <input type="checkbox" id="p15" checked><label for="p15"></label>
+        <input type="checkbox" id="p16"><label for="p16"></label>
+        <input type="checkbox" id="p17"><label for="p17"></label>
+      </div>
+      <div class="bit-group">
+        <input type="checkbox" id="p18" checked><label for="p18"></label>
+        <input type="checkbox" id="p19"><label for="p19"></label>
+        <input type="checkbox" id="p20"><label for="p20"></label>
+        <input type="checkbox" id="p21"><label for="p21"></label>
+        <input type="checkbox" id="p22"><label for="p22"></label>
+        <input type="checkbox" id="p23" checked><label for="p23"></label>
+      </div>
+    </div>
+    <div class="encoded-row"><span class="label">Base64URL:</span> <span class="payload-b64"></span></div>
+    <div class="encoded-row"><span class="label">ASCII:</span> <span class="payload-ascii"></span></div>
+  </section>
+
+  <section class="card card-key">
+    <h2>Secret Key <small>24 BITS — YOUR SECRET</small></h2>
+    <div class="bit-grid">
+      <div class="bit-group">
+        <input type="checkbox" id="k0" checked><label for="k0"></label>
+        <input type="checkbox" id="k1"><label for="k1"></label>
+        <input type="checkbox" id="k2" checked><label for="k2"></label>
+        <input type="checkbox" id="k3" checked><label for="k3"></label>
+        <input type="checkbox" id="k4"><label for="k4"></label>
+        <input type="checkbox" id="k5" checked><label for="k5"></label>
+      </div>
+      <div class="bit-group">
+        <input type="checkbox" id="k6"><label for="k6"></label>
+        <input type="checkbox" id="k7" checked><label for="k7"></label>
+        <input type="checkbox" id="k8" checked><label for="k8"></label>
+        <input type="checkbox" id="k9" checked><label for="k9"></label>
+        <input type="checkbox" id="k10"><label for="k10"></label>
+        <input type="checkbox" id="k11"><label for="k11"></label>
+      </div>
+      <div class="bit-group">
+        <input type="checkbox" id="k12" checked><label for="k12"></label>
+        <input type="checkbox" id="k13" checked><label for="k13"></label>
+        <input type="checkbox" id="k14"><label for="k14"></label>
+        <input type="checkbox" id="k15"><label for="k15"></label>
+        <input type="checkbox" id="k16"><label for="k16"></label>
+        <input type="checkbox" id="k17" checked><label for="k17"></label>
+      </div>
+      <div class="bit-group">
+        <input type="checkbox" id="k18" checked><label for="k18"></label>
+        <input type="checkbox" id="k19"><label for="k19"></label>
+        <input type="checkbox" id="k20" checked><label for="k20"></label>
+        <input type="checkbox" id="k21"><label for="k21"></label>
+        <input type="checkbox" id="k22" checked><label for="k22"></label>
+        <input type="checkbox" id="k23"><label for="k23"></label>
+      </div>
+    </div>
+  </section>
+
+  <section class="card card-sig">
+    <h2>Computed &ldquo;Signature&rdquo;</h2>
+    <div class="encoded-row"><span class="label">CS24(header + payload, key):</span> <span class="sig-b64"></span></div>
+    <p class="sig-note">header ⊕ payload ⊕ key &mdash; the most secure* algorithm</p>
+  </section>
+
+  <section class="card card-verify">
+    <h2>Verify <small>ENTER &ldquo;SIGNATURE&rdquo; BITS</small></h2>
+    <div class="bit-grid">
+      <div class="bit-group">
+        <input type="checkbox" id="s0" checked><label for="s0"></label>
+        <input type="checkbox" id="s1"><label for="s1"></label>
+        <input type="checkbox" id="s2" checked><label for="s2"></label>
+        <input type="checkbox" id="s3"><label for="s3"></label>
+        <input type="checkbox" id="s4"><label for="s4"></label>
+        <input type="checkbox" id="s5"><label for="s5"></label>
+      </div>
+      <div class="bit-group">
+        <input type="checkbox" id="s6"><label for="s6"></label>
+        <input type="checkbox" id="s7" checked><label for="s7"></label>
+        <input type="checkbox" id="s8" checked><label for="s8"></label>
+        <input type="checkbox" id="s9"><label for="s9"></label>
+        <input type="checkbox" id="s10"><label for="s10"></label>
+        <input type="checkbox" id="s11"><label for="s11"></label>
+      </div>
+      <div class="bit-group">
+        <input type="checkbox" id="s12" checked><label for="s12"></label>
+        <input type="checkbox" id="s13" checked><label for="s13"></label>
+        <input type="checkbox" id="s14"><label for="s14"></label>
+        <input type="checkbox" id="s15" checked><label for="s15"></label>
+        <input type="checkbox" id="s16"><label for="s16"></label>
+        <input type="checkbox" id="s17" checked><label for="s17"></label>
+      </div>
+      <div class="bit-group">
+        <input type="checkbox" id="s18" checked><label for="s18"></label>
+        <input type="checkbox" id="s19" checked><label for="s19"></label>
+        <input type="checkbox" id="s20" checked><label for="s20"></label>
+        <input type="checkbox" id="s21" checked><label for="s21"></label>
+        <input type="checkbox" id="s22" checked><label for="s22"></label>
+        <input type="checkbox" id="s23" checked><label for="s23"></label>
+      </div>
+    </div>
+    <div class="verify-result"></div>
+  </section>
+
+  <section class="card card-debug">
+    <h2>CWS Debugger <small>CSS INTERNALS</small></h2>
+    <div class="debug-body">
+
+      <div class="dbg-section">
+        <div class="dbg-label">Payload counters (6-bit → Base64URL index)</div>
+        <div class="dbg-row">
+          <span class="dbg-item"><span class="dbg-key">c0</span> = <span class="dbg-c0"></span></span>
+          <span class="dbg-item"><span class="dbg-key">c1</span> = <span class="dbg-c1"></span></span>
+          <span class="dbg-item"><span class="dbg-key">c2</span> = <span class="dbg-c2"></span></span>
+          <span class="dbg-item"><span class="dbg-key">c3</span> = <span class="dbg-c3"></span></span>
+        </div>
+      </div>
+
+      <div class="dbg-section">
+        <div class="dbg-label">ASCII byte counters (8-bit → character code)</div>
+        <div class="dbg-row">
+          <span class="dbg-item"><span class="dbg-key">byte0</span> = <span class="dbg-byte0"></span></span>
+          <span class="dbg-item"><span class="dbg-key">byte1</span> = <span class="dbg-byte1"></span></span>
+          <span class="dbg-item"><span class="dbg-key">byte2</span> = <span class="dbg-byte2"></span></span>
+        </div>
+      </div>
+
+      <div class="dbg-section">
+        <div class="dbg-label">&ldquo;Signature&rdquo; counters (XOR result → Base64URL index)</div>
+        <div class="dbg-row">
+          <span class="dbg-item"><span class="dbg-key">sig0</span> = <span class="dbg-sig0"></span></span>
+          <span class="dbg-item"><span class="dbg-key">sig1</span> = <span class="dbg-sig1"></span></span>
+          <span class="dbg-item"><span class="dbg-key">sig2</span> = <span class="dbg-sig2"></span></span>
+          <span class="dbg-item"><span class="dbg-key">sig3</span> = <span class="dbg-sig3"></span></span>
+        </div>
+      </div>
+
+      <div class="dbg-section">
+        <div class="dbg-label">XOR computation (header ⊕ payload ⊕ key)</div>
+        <div class="dbg-xor-grid">
+          <span class="dbg-xor-label">H</span><span class="xb xb-h0"></span><span class="xb xb-h1"></span><span class="xb xb-h2"></span><span class="xb xb-h3"></span><span class="xb xb-h4"></span><span class="xb xb-h5"></span><span class="xb-sep"></span><span class="xb xb-h6"></span><span class="xb xb-h7"></span><span class="xb xb-h8"></span><span class="xb xb-h9"></span><span class="xb xb-h10"></span><span class="xb xb-h11"></span><span class="xb-sep"></span><span class="xb xb-h12"></span><span class="xb xb-h13"></span><span class="xb xb-h14"></span><span class="xb xb-h15"></span><span class="xb xb-h16"></span><span class="xb xb-h17"></span><span class="xb-sep"></span><span class="xb xb-h18"></span><span class="xb xb-h19"></span><span class="xb xb-h20"></span><span class="xb xb-h21"></span><span class="xb xb-h22"></span><span class="xb xb-h23"></span>
+          <span class="dbg-xor-label">P</span><span class="xb xb-p0"></span><span class="xb xb-p1"></span><span class="xb xb-p2"></span><span class="xb xb-p3"></span><span class="xb xb-p4"></span><span class="xb xb-p5"></span><span class="xb-sep"></span><span class="xb xb-p6"></span><span class="xb xb-p7"></span><span class="xb xb-p8"></span><span class="xb xb-p9"></span><span class="xb xb-p10"></span><span class="xb xb-p11"></span><span class="xb-sep"></span><span class="xb xb-p12"></span><span class="xb xb-p13"></span><span class="xb xb-p14"></span><span class="xb xb-p15"></span><span class="xb xb-p16"></span><span class="xb xb-p17"></span><span class="xb-sep"></span><span class="xb xb-p18"></span><span class="xb xb-p19"></span><span class="xb xb-p20"></span><span class="xb xb-p21"></span><span class="xb xb-p22"></span><span class="xb xb-p23"></span>
+          <span class="dbg-xor-label">K</span><span class="xb xb-k0"></span><span class="xb xb-k1"></span><span class="xb xb-k2"></span><span class="xb xb-k3"></span><span class="xb xb-k4"></span><span class="xb xb-k5"></span><span class="xb-sep"></span><span class="xb xb-k6"></span><span class="xb xb-k7"></span><span class="xb xb-k8"></span><span class="xb xb-k9"></span><span class="xb xb-k10"></span><span class="xb xb-k11"></span><span class="xb-sep"></span><span class="xb xb-k12"></span><span class="xb xb-k13"></span><span class="xb xb-k14"></span><span class="xb xb-k15"></span><span class="xb xb-k16"></span><span class="xb xb-k17"></span><span class="xb-sep"></span><span class="xb xb-k18"></span><span class="xb xb-k19"></span><span class="xb xb-k20"></span><span class="xb xb-k21"></span><span class="xb xb-k22"></span><span class="xb xb-k23"></span>
+          <span class="dbg-xor-label">⊕</span><span class="xb xb-x0"></span><span class="xb xb-x1"></span><span class="xb xb-x2"></span><span class="xb xb-x3"></span><span class="xb xb-x4"></span><span class="xb xb-x5"></span><span class="xb-sep"></span><span class="xb xb-x6"></span><span class="xb xb-x7"></span><span class="xb xb-x8"></span><span class="xb xb-x9"></span><span class="xb xb-x10"></span><span class="xb xb-x11"></span><span class="xb-sep"></span><span class="xb xb-x12"></span><span class="xb xb-x13"></span><span class="xb xb-x14"></span><span class="xb xb-x15"></span><span class="xb xb-x16"></span><span class="xb xb-x17"></span><span class="xb-sep"></span><span class="xb xb-x18"></span><span class="xb xb-x19"></span><span class="xb xb-x20"></span><span class="xb xb-x21"></span><span class="xb xb-x22"></span><span class="xb xb-x23"></span>
+        </div>
+      </div>
+
+      <div class="dbg-section">
+        <div class="dbg-label">CSS techniques abused</div>
+        <ul class="dbg-list">
+          <li><code>@counter-style base64url</code> — 64 symbols, <code>system: fixed 0</code></li>
+          <li><code>@counter-style ascii</code> — 95 symbols, <code>system: fixed 32</code></li>
+          <li><code>:has(#id:checked)</code> — reads checkbox state from anywhere in the form</li>
+          <li><code>counter-increment</code> — accumulates bit weights (32, 16, 8, 4, 2, 1)</li>
+          <li><code>content: counter(…, base64url)</code> — renders live Base64URL output</li>
+          <li>Header XOR-folded to 24-bit constant (<code>0x5C2834</code>) — baked into selectors</li>
+          <li>96 mismatch selectors — any single bit difference → INVALID</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <p>Zero JavaScript. Pure CSS computation.</p>
+    <p><strong>CS24</strong> provides exactly 0 bits of security.</p>
+    <p class="fine-print">* not actually secure</p>
+  </footer>
+
+</form>
+</body>
+</html>
